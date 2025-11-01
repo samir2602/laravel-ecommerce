@@ -4,14 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use DataTables;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+
+            $data = Product::get();
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){       
+                        $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';      
+                        return $btn;
+                    })
+                    ->addColumn('status', function($row){
+                        $checked = ($row->status) ? 'checked' : '';
+                        $btn = '<div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckChecked" '.$checked.'>
+                            <label class="form-check-label" for="switchCheckChecked"></label>
+                        </div>'; 
+                        return $btn;
+                    })
+                    ->editColumn('image', function ($row) {
+                        $image = url('uploads/product/'.$row->id.'/'.$row->image);
+                        return '<img src="'.$image.'" style="width:100px; height:auto;">';
+                    })
+                    ->rawColumns(['status','image','action'])
+                    ->make(true);
+        }
         return view('product.index');
     }
 
