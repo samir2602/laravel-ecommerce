@@ -88,25 +88,6 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $(function () {                
-            var table = $('.data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('product.index') }}",
-                columns: [
-                    {data: 'id', name: 'id'},
-                    {data: 'name', name: 'name'},
-                    {data: 'price', name: 'price'},
-                    {data: 'upc', name: 'upc'},
-                    {data: 'status', name: 'status'},
-                    {data: 'image', name: 'image'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
-            });                
-        });
-    });
-    </script>
+    @stack('scripts')    
 </body>
 </html>

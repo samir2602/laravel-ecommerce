@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use DataTables;
+use Validator;
+
 
 class ProductController extends Controller
 {
@@ -20,7 +22,7 @@ class ProductController extends Controller
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){       
-                        $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';      
+                        $btn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-primary btn-sm">Edit</a>';
                         return $btn;
                     })
                     ->addColumn('status', function($row){
@@ -55,11 +57,15 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $randomNumber = random_int(100000000000, 999999999999);
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|unique:products,name',
             'price' => 'required',            
             'image' => 'required|image:mimes:jpeg,png,jpg,gif,svg',
         ]);
+
+        if ($validator->fails()) {            
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         $product_data = $request->all();
         $image_name = $request->name.'_'.time().'.'.$request->image->extension();
@@ -68,7 +74,7 @@ class ProductController extends Controller
         $pid = Product::create($product_data);
         $request->image->move(public_path('uploads/product/').$pid->id, $image_name);
 
-        return redirect()->route('product.index');
+        return response()->json(['success' => true, 'product' => $pid]);
     }
 
     /**
