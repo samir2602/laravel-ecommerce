@@ -13,4 +13,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix('admin')->group(function(){
     Route::resource('/product', ProductController::class);
+    Route::post('/product_status', [ProductController::class, 'update_status'])->name('product_status');
 });

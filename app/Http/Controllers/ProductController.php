@@ -23,12 +23,13 @@ class ProductController extends Controller
                     ->addIndexColumn()
                     ->addColumn('action', function($row){       
                         $btn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-primary btn-sm">Edit</a>';
+                        $btn .= ' <span data-id="'.$row->id.'" class="delete_btn btn btn-danger btn-sm">Delete</span>';
                         return $btn;
                     })
                     ->addColumn('status', function($row){
                         $checked = ($row->status) ? 'checked' : '';
                         $btn = '<div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckChecked" '.$checked.'>
+                            <input class="form-check-input status-switch" data-id="'.$row->id.'" type="checkbox" role="switch" id="switchCheckChecked" '.$checked.'>
                             <label class="form-check-label" for="switchCheckChecked"></label>
                         </div>'; 
                         return $btn;
@@ -90,7 +91,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $product->image = url('uploads/product/'.$product->id.'/'.$product->image);
+        return response()->json(['success' => true, 'product' => $product]);
     }
 
     /**
@@ -98,7 +100,26 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:products,name,'.$product->id,
+            'price' => 'required',
+        ]);
+
+        if ($validator->fails()) {            
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $product_data = $request->all();
+        if($request->image){
+            $oldimagePath = public_path('uploads/product/'.$product->id.'/'.$product->image);
+            unlink($oldimagePath);
+            $image_name = $request->name.'_'.time().'.'.$request->image->extension();
+            $product_data['image'] = $image_name;
+            $request->image->move(public_path('uploads/product/').$product->id, $image_name);
+        }        
+        $product->update($product_data);
+
+        return response()->json(['success' => true, 'product' => $product->id]);
     }
 
     /**
@@ -106,6 +127,25 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $oldimagePath = public_path('uploads/product/'.$product->id.'/'.$product->image);
+        unlink($oldimagePath);
+        $product->delete();
+        return response()->json(['success' => true]);
+    }
+
+    public function update_status(Request $request){
+        $product = Product::find($request->id);
+
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => $request->id], 404);
+        }else{
+            $product->status = $request->status;
+            $product->save();
+
+            return response()->json([
+                'success' => true,
+                'status' => $product->status
+            ]);
+        }
     }
 }
