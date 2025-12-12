@@ -41,6 +41,7 @@ class ProductController extends Controller
                     ->rawColumns(['status','image','action'])
                     ->make(true);
         }
+        
         return view('product.index');
     }
 

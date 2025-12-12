@@ -53,8 +53,14 @@
                             @endif
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('product.index') }}">product</a>
-                            </li>                        
+                                <a class="nav-link" href="{{ route('product.index') }}">Product</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('role.index') }}">Role</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('permission.index') }}">Permission</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}

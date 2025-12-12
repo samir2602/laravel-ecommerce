@@ -141,7 +141,8 @@
                 processData: false,
                 success: function(res){
                     if(res.product.id){
-                        $('#addproductmodal').modal('hide');                        
+                        $('#addproductmodal').modal('hide');
+                        $('.data-table').DataTable().ajax.reload();
                     } else {                        
                     }
                     $('#add-product-form')[0].reset();                    
@@ -173,7 +174,8 @@
                 processData: false,
                 success: function(res){
                     if(res.product){
-                        $('#editproductmodal').modal('hide');                        
+                        $('#editproductmodal').modal('hide');
+                        $('.data-table').DataTable().ajax.reload();
                     } else {                        
                     }
                     $('#edit-product-form')[0].reset();                    
@@ -213,7 +215,7 @@
                     status : status,
                 },
                 success: function(res){
-                    alert('status update');
+                    // alert('status update');
                 },
                 error: function(err){
                     if(err.status === 422){
