@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,4 +19,5 @@ Route::prefix('admin')->middleware('auth')->group(function(){
     Route::post('/product_status', [ProductController::class, 'update_status'])->name('product_status');
     Route::resource('/role', RoleController::class);
     Route::resource('/permission', PermissionController::class);
+    Route::resource('/user', UserController::class);
 });

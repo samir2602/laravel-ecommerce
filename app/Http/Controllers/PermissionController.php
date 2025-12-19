@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Validator;
 use DataTables;
 
-class PermissionController extends Controller
+class PermissionController implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [            
+            new Middleware('permission:add_permission', only: ['index']),
+            new Middleware('permission:edit_permission', only: ['edit']),
+            new Middleware('permission:add_permission', only: ['create']),
+            new Middleware('permission:delete_permission', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

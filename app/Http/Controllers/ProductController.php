@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use DataTables;
 use Validator;
 
 
-class ProductController extends Controller
-{
+class ProductController implements HasMiddleware
+{    
+    public static function middleware(): array
+    {
+        return [            
+            new Middleware('permission:show_product', only: ['index']),
+            new Middleware('permission:edit_product', only: ['edit']),
+            new Middleware('permission:add_product', only: ['create']),
+            new Middleware('permission:delete_product', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -65,7 +76,7 @@ class ProductController extends Controller
             'image' => 'required|image:mimes:jpeg,png,jpg,gif,svg',
         ]);
 
-        if ($validator->fails()) {            
+        if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 

@@ -3,12 +3,23 @@
 namespace App\Http\Controllers;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Http\Request;
 use Validator;
 use DataTables;
 
-class RoleController extends Controller
+class RoleController implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [            
+            new Middleware('permission:add_role', only: ['index']),
+            new Middleware('permission:edit_role', only: ['edit']),
+            new Middleware('permission:add_role', only: ['create']),
+            new Middleware('permission:delete_role', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

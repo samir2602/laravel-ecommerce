@@ -52,15 +52,26 @@
                                 </li>
                             @endif
                         @else
+                            @can('show_product')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('product.index') }}">Product</a>
                             </li>
+                            @endcan
+                            @can('show_role')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('role.index') }}">Role</a>
                             </li>
+                            @endcan
+                            @can('show_permission')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('permission.index') }}">Permission</a>
                             </li>
+                            @endcan
+                            @can('show_user')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('user.index') }}">User</a>
+                            </li>
+                            @endcan
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
